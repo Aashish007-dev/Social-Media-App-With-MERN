@@ -4,6 +4,8 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import { inngest, functions } from "./inngest/index.js"
 import { serve } from "inngest/express"
+import { clerkMiddleware } from '@clerk/express'
+import userRouter from "./routes/user.routes.js";
 
 await connectDB();
 
@@ -11,12 +13,15 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(clerkMiddleware());
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
 app.use("/api/inngest", serve({ client: inngest, functions }))
+
+app.use("/api/user", userRouter);
 
 const port = process.env.PORT || 5000;
 
