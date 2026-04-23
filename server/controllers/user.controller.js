@@ -1,7 +1,9 @@
 import imagekit from "../config/imageKit.js";
 import UserModel from "../models/user.model.js";
+import PostModel from "../models/post.model.js";
 import ConnectionModel from "../models/connection.model.js";
 import fs from "fs";
+import { inngest } from "../inngest/index.js";
 
 // Get user Data using userId
 
@@ -207,10 +209,16 @@ export const sendConnectionRequest = async (req, res) => {
         });
         
         if(!connection){
-            await ConnectionModel.create({
+            const newConnection = await ConnectionModel.create({
                 from_user_id: userId,
                 to_user_id: id,
             });
+
+            await inngest.send({
+                name: 'app/connection-request',
+                data: {connectionId: newConnection._id}
+            })
+
             return res.status(200).json({success: true, message: "Connection request sent successfully"});
         } else if(connection && connection.status === "accepted"){
             return res.status(400).json({success: false, message: "You are already connected with this user"});
@@ -276,6 +284,27 @@ export const acceptConnectionRequest = async (req, res) => {
         await connection.save();
 
         res.status(200).json({success: true, message: "Connection request accepted successfully"});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success: false, message: "Internal server error"});
+    }
+}
+
+
+// Get user Profiles
+
+export const getUserProfiles = async (req, res) => {
+    try {
+        const {profileId} = req.body;
+        const profile = await UserModel.findById(profileId);
+        
+        if(!profile){
+            return res.status(404).json({success: false, message: "Profile not found"});
+        }
+
+        const posts = await PostModel.find({user: profileId}).populate("user");
+
+        res.status(200).json({success: true, profile, posts});
     } catch (error) {
         console.log(error);
         return res.status(500).json({success: false, message: "Internal server error"});

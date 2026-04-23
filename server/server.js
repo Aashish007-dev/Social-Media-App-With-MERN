@@ -6,6 +6,9 @@ import { inngest, functions } from "./inngest/index.js"
 import { serve } from "inngest/express"
 import { clerkMiddleware } from '@clerk/express'
 import userRouter from "./routes/user.routes.js";
+import postRouter from "./routes/post.routes.js";
+import storyRouter from "./routes/story.routes.js";
+import messageRouter from "./routes/message.routes.js";
 
 await connectDB();
 
@@ -22,6 +25,9 @@ app.get("/", (req, res) => {
 app.use("/api/inngest", serve({ client: inngest, functions }))
 
 app.use("/api/user", userRouter);
+app.use("/api/post", postRouter);
+app.use("/api/story", storyRouter);
+app.use("/api/message", messageRouter);
 
 const port = process.env.PORT || 5000;
 
