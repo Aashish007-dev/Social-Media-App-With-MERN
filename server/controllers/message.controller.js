@@ -1,7 +1,6 @@
 import fs from 'fs';
-import imageKit from '../config/imagekit.js';
+import imageKit from '../config/imageKit.js';
 import MessageModel from '../models/message.model.js';
-import imagekit from '../config/imagekit.js';
 
 
 // Create an empty object to store SS Event connection
@@ -54,7 +53,7 @@ export const sendMessage = async (req, res) => {
                 fileName: image.originalname,
             });
 
-            media_url = imagekit.url({
+            media_url = imageKit.url({
                 path: response.filePath,
                 transformation: [
                     {quality: 'auto'},
