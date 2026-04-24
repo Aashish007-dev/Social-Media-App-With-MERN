@@ -93,7 +93,7 @@ const StoryViewer = ({viewStory, setViewStory}) => {
 
         {/* content wrapper */}
 
-        <div className='max-w-[90vw] max-h-[90vh] flex items-center justify-center'>
+        <div className='max-w-[90vw] max-h-[90vh] lg:max-w-[35vw] lg:max-h-[35vh]  flex items-center justify-center'>
             {
                 renderContent()
             }

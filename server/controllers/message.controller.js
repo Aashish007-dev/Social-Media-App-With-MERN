@@ -103,7 +103,7 @@ export const getChatMessages = async (req, res) => {
                 {from_user_id: userId, to_user_id},
                 {from_user_id: to_user_id, to_user_id: userId}
             ]
-        }).sort({created_at: 1});
+        }).sort({createdAt: 1});
 
         // mark messages as seen
         await MessageModel.updateMany(
@@ -122,7 +122,7 @@ export const getUserRecentMessages = async (req, res) => {
     try {
         const {userId} = req.auth();
 
-        const messages = await MessageModel.find({to_user_id: userId}.populate('from_user_id to_user_id')).sort({created_at: -1});
+        const messages = await MessageModel.find({to_user_id: userId}).populate('from_user_id to_user_id').sort({created_at: -1});
 
         res.status(200).json({success: true, messages});
     } catch (error) {
